@@ -49,9 +49,9 @@ export default function HomeScreen() {
   }, [latitude, longitude]);
 
   function formatForecastTime(timestamp) {
-    const date = new Date(timestamp * 1000); // Convertir le timestamp en millisecondes
-    const hours = date.getHours().toString().padStart(2, '0'); // Ajouter un zéro en tête si nécessaire
-    const minutes = date.getMinutes().toString().padStart(2, '0'); // Ajouter un zéro en tête si nécessaire
+    const date = new Date(timestamp * 1000); 
+    const hours = date.getHours().toString().padStart(2, '0'); 
+    const minutes = date.getMinutes().toString().padStart(2, '0'); 
     return `${hours}:${minutes}`;
   }
 
@@ -73,10 +73,10 @@ export default function HomeScreen() {
   }, [latitude, longitude]);
 
 
-  const image = {uri: 'https://i.imgur.com/3940hBQ.jpeg'};
+  const image = {uri: 'https://media.istockphoto.com/id/1130318100/fr/photo/plein-soleil-sur-ciel-bleu.jpg?s=170667a&w=0&k=20&c=Tsjg5tgwQCHDdURNYzmd7FdJded0SmkGNKO4vJGfti0='};
   return (
     <View style={styles.container}>
-      <ImageBackground blurRadius={20} source={image} resizeMode="cover" style={styles.image}>
+      <ImageBackground blurRadius={10} source={image} resizeMode="cover" style={styles.image}>
         <View style={styles.overlay}>
           {weatherData && (
             <View>
@@ -133,8 +133,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: windowWidth,
-    height: windowHeight,
   },
 
   overlay: {
