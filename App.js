@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Dimensions, ImageBackground, Image } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, ImageBackground, Image, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
 
@@ -48,6 +48,13 @@ export default function HomeScreen() {
     }
   }, [latitude, longitude]);
 
+  function formatForecastTime(timestamp) {
+    const date = new Date(timestamp * 1000); // Convertir le timestamp en millisecondes
+    const hours = date.getHours().toString().padStart(2, '0'); // Ajouter un zéro en tête si nécessaire
+    const minutes = date.getMinutes().toString().padStart(2, '0'); // Ajouter un zéro en tête si nécessaire
+    return `${hours}:${minutes}`;
+  }
+
   function weatherPrev(){
     fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${key}&units=metric`)
     .then(function(respPrev) { return respPrev.json(); }) 
@@ -76,22 +83,25 @@ export default function HomeScreen() {
               <Text style={styles.topLeftText}>{weatherData.name}</Text>
               <Image style={styles.imageIcon} source={{ uri: `http://openweathermap.org/img/w/${weatherData.weather[0].icon}.png` }} />
               <Text style={styles.text}>{weatherData.main.temp} °C</Text>
-              <Text style={styles.text}>{weatherData.weather[0].description}</Text>
+              <Text style={styles.textExp}>{weatherData.weather[0].description}</Text>
             </View>
           )}
 
-
-          {donner && donner.list && (
-            <View style={styles.forecastContainer}>
-              {donner.list.slice(0, 3).map((forecast, index) => (
-                <View key={index} style={styles.forecastBlock}>
-                  <Text style={styles.forecastText}>{forecast.dt_txt}</Text>
-                  <Image style={styles.imageIconPrev} source={{ uri: `http://openweathermap.org/img/w/${donner.list[0].weather[0].icon}.png` }} />
-                  <Text style={styles.forecastText}>{forecast.main.temp} °C</Text>
-                </View>
-              ))}
+              
+      {donner && donner.list && (
+      <View style={styles.forecastContainer}>
+        <ScrollView horizontal style={styles.scrollView}>
+          {donner.list.slice(0, 35).map((forecast, index) => (
+            <View horizontal key={index} style={styles.forecastBlock}>
+             <Text style={styles.forecastText}>{formatForecastTime(forecast.dt)}</Text>
+              <Image style={styles.imageIconPrev} source={{ uri: `http://openweathermap.org/img/w/${donner.list[index].weather[0].icon}.png` }} />
+              <Text style={styles.forecastText}>{forecast.main.temp} °C</Text>
             </View>
-          )}
+          ))}
+        </ScrollView>
+      </View>
+    )}
+
         </View>
         <StatusBar style="light" />
       </ImageBackground>
@@ -109,6 +119,7 @@ const styles = StyleSheet.create({
   },
 
   imageIcon: {
+    marginTop: 40,
     width: windowWidth * 0.6, 
     height: windowWidth * 0.6, 
   },
@@ -138,6 +149,14 @@ const styles = StyleSheet.create({
     fontSize: 30,
     textAlign: 'center',
     margin: 5,
+  },
+
+  textExp: {
+    color: '#fff',
+    fontSize: 30,
+    textAlign: 'center',
+    margin: 5,
+    marginBottom: 100,
   },
 
   topLeftText: {
